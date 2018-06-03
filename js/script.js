@@ -179,7 +179,6 @@ $(function() {
             }
             img5.onload = function() {
                 ctx.drawImage(img5, 0, 0, 512, 512);
-                files[0].name = "";
             }
 
             reader.readAsDataURL(file);
@@ -837,7 +836,7 @@ var Page4 = function() {
 
         ctx3.putImageData(imageData3, 0, 0);
 
-        //X
+        //X方向过中心点差值
         var l = L / 2 - 1
         for (var j = 0; j < L; j++) {
             var a1 = data2[L * l * 4 + j * 4 + 0] - data1[L * l * 4 + j * 4 + 0];
@@ -846,7 +845,7 @@ var Page4 = function() {
             datax.push([j + 1, (a1 + a2 + a3) / 3]);
         }
 
-        //Y
+        //Y方向过中心点差值
         var j = L / 2 - 1
         for (var l = 0; l < L; l++) {
             var a1 = data2[L * l * 4 + j * 4 + 0] - data1[L * l * 4 + j * 4 + 0];
