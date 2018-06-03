@@ -184,6 +184,7 @@ $(function() {
             }
             img5.onload = function() {
                 ctx.drawImage(img5, 0, 0, 512, 512);
+                ctx1.drawImage(img5, 0, 0);
             }
 
             reader.readAsDataURL(file);
