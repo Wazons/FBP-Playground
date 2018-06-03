@@ -45,6 +45,7 @@ var ctx3 = canvas3.getContext('2d');
 //初始化默认图片
 
 ctx.drawImage(img1, 0, 0);
+ctx1.drawImage(img1, 0, 0);
 
 //定义画布的内部数据格式
 var imageData = ctx.getImageData(0, 0, L, L);
@@ -56,8 +57,8 @@ var imageDataiR = ctxiR.createImageData(L, L);
 var imageDataiFFR = ctxiFFR.createImageData(L2, RL);
 var imageDataL2 = ctxL2.createImageData(L3, L3);
 var imageData1 = ctx1.getImageData(0, 0, L, L);
-var imageData2 = ctx2.getImageData(0, 0, L, L);
-var imageData3 = ctx3.getImageData(0, 0, L, L);
+var imageData2 = ctx2.createImageData(L, L);
+var imageData3 = ctx3.createImageData(L, L);
 
 //获取直接操纵画布的变量
 var data = imageData.data;
@@ -128,6 +129,7 @@ function cimg1() {
     checkedn = 1;
     //修改原始图片
     ctx.drawImage(img1, 0, 0);
+    ctx1.drawImage(img1, 0, 0);
     //在选择图片页面显示选中效果
     $('#ximg1').addClass("active");
     $('#ximg2').removeClass("active");
@@ -138,6 +140,7 @@ function cimg1() {
 function cimg2() {
     checkedn = 2;
     ctx.drawImage(img2, 0, 0);
+    ctx1.drawImage(img2, 0, 0);
     $('#ximg1').removeClass("active");
     $('#ximg2').addClass("active");
     $('#ximg3').removeClass("active");
@@ -147,6 +150,7 @@ function cimg2() {
 function cimg3() {
     checkedn = 3;
     ctx.drawImage(img3, 0, 0);
+    ctx1.drawImage(img3, 0, 0);
     $('#ximg1').removeClass("active");
     $('#ximg2').removeClass("active");
     $('#ximg3').addClass("active");
@@ -156,6 +160,7 @@ function cimg3() {
 function cimg4() {
     checkedn = 4;
     ctx.drawImage(img4, 0, 0);
+    ctx1.drawImage(img4, 0, 0);
     $('#ximg1').removeClass("active");
     $('#ximg2').removeClass("active");
     $('#ximg3').removeClass("active");
@@ -777,20 +782,12 @@ var Page4 = function() {
     var refreshP4 = function() {
         datax = [];
         datay = [];
-        imageData1 = ctx1.createImageData(L, L);
+        imageData1 = ctx1.getImageData(0, 0, L, L);
         imageData2 = ctx2.createImageData(L, L);
-        imageData3 = ctx2.createImageData(L, L);
+        imageData3 = ctx3.createImageData(L, L);
         data1 = imageData1.data;
         data2 = imageData2.data;
         data3 = imageData3.data;
-        for (var l = 0; l < L; l++) {
-            for (var j = 0; j < L; j++) {
-                data1[L * l * 4 + j * 4 + 0] = 0;
-                data1[L * l * 4 + j * 4 + 1] = 0;
-                data1[L * l * 4 + j * 4 + 2] = 0;
-                data1[L * l * 4 + j * 4 + 3] = 255;
-            }
-        }
         for (var l = 0; l < L; l++) {
             for (var j = 0; j < L; j++) {
                 data2[L * l * 4 + j * 4 + 0] = 0;
@@ -807,7 +804,6 @@ var Page4 = function() {
                 data3[L * l * 4 + j * 4 + 3] = 255;
             }
         }
-        ctx1.putImageData(imageData1, 0, 0);
         ctx2.putImageData(imageData2, 0, 0);
         ctx3.putImageData(imageData3, 0, 0);
     }
@@ -818,11 +814,8 @@ var Page4 = function() {
 
         //直接从画布中获取数据
         for (var j = 0; j < L * L * 4; j++)
-            data1[j] = data[j];
-        for (var j = 0; j < L * L * 4; j++)
             data2[j] = dataiR[j];
-        ctx1.putImageData(imageData1, 0, 0);
-        ctx2.putImageData(imageData2, 0, 0);
+
 
         //灰色代表两图像一致，亮于灰色代表反投影图像比原图亮
         for (var l = 0; l < L; l++) {
@@ -834,6 +827,7 @@ var Page4 = function() {
             }
         }
 
+        ctx2.putImageData(imageData2, 0, 0);
         ctx3.putImageData(imageData3, 0, 0);
 
         //X方向过中心点差值
