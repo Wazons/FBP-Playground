@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cn">
 
 <head>
     <meta charset="utf-8">
@@ -105,7 +105,7 @@
                     <colum class="col-6 col-lg-3 mb-4">
                         <div class="card wow fadeIn">
                             <div class="view overlay card-noact active" id="ximg1">
-                                <img src="./img/sl.png" class="img-fluid" />
+                                <img id="img1" src="./img/sl.png" class="img-fluid" />
                                 <a onclick="cimg1()">
                                     <div class="mask waves-effect waves-light">
                                         <div class="card-body flex-center">
@@ -119,7 +119,7 @@
                     <colum class="col-6 col-lg-3 mb-4">
                         <div class="card wow fadeIn">
                             <div class="view overlay card-noact" id="ximg2">
-                                <img src="./img/lung.png" class="img-fluid" />
+                                <img id="img2" src="./img/lung.png" class="img-fluid" />
                                 <a onclick="cimg2()">
                                     <div class="mask waves-effect waves-light">
                                         <div class="card-body flex-center">
@@ -133,7 +133,7 @@
                     <colum class="col-6 col-lg-3 mb-4">
                         <div class="card wow fadeIn">
                             <div class="view overlay card-noact" id="ximg3">
-                                <img src="./img/bone.png" class="img-fluid" />
+                                <img id="img3" src="./img/bone.png" class="img-fluid" />
                                 <a onclick="cimg3()">
                                     <div class="mask waves-effect waves-light">
                                         <div class="card-body flex-center">
@@ -147,11 +147,11 @@
                     <colum class="col-6 col-lg-3 mb-4">
                         <div class="card wow fadeIn">
                             <div class="view overlay card-noact" id="ximg4">
-                                <img src="./img/color.png" class="img-fluid" />
+                                <img id="img4" src="./img/color.png" class="img-fluid" />
                                 <a onclick="cimg4()">
                                     <div class="mask waves-effect waves-light">
                                         <div class="card-body flex-center">
-                                            <h4 class="h4-responsive photo-intro">（测试）</h4>
+                                            <h4 class="h4-responsive photo-intro">非医学图片</h4>
                                         </div>
                                     </div>
                                 </a>
@@ -160,7 +160,17 @@
                     </colum>
 
                 </row>
-
+                <row class="row wow fadeIn justify-content-center mt-4">
+                    <div class="input-group mb-3 col-12 col-lg-6">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">上传</span>
+                        </div>
+                        <div class="custom-file">
+                            <input id="file" type="file" name="file" class="custom-file-input">
+                            <label id="filelabel" class="custom-file-label" for="file">选择文件</label>
+                        </div>
+                    </div>
+                </row>
 
             </section>
             <section id="section2">
@@ -190,7 +200,7 @@
                         <label for="form3">最大角度</label>
                     </colum>
                     <colum class="col-6 col-lg-2 col-xl-1 mb-4">
-                        <input type="text" id="form3" class="form-control" value="179">
+                        <input type="text" id="form3" class="form-control" value="180">
                     </colum>
                     <colum class="col-6 col-lg-1 col-xl-1 mb-4 text-center text-md-right">
                         <label for="form1">步长</label>
@@ -281,21 +291,50 @@
                     <h2 class="h2-responsive text-center mb-5">结果比较</h2>
                 </div>
                 <row class="row wow fadeIn mb-4">
-                    <colum class="col-12 col-lg-4 mb-4">
-                        <canvas id="ans1" width="512" height="512"></canvas>
+                    <colum class="col-12 col-lg-4">
+                        <div class="mb-3">
+                            <canvas id="ans1" width="512" height="512"></canvas>
+                        </div>
+                        <div>
+                            <h4 class="h4-responsive text-center">原始图片</h4>
+                        </div>
                     </colum>
-                    <colum class="col-12 col-lg-4 mb-4">
-                        <canvas id="ans2" width="512" height="512"></canvas>
+                    <colum class="col-12 col-lg-4">
+                        <div class="mb-3">
+                            <canvas id="ans2" width="512" height="512"></canvas>
+                        </div>
+                        <div>
+                            <h4 class="h4-responsive text-center">还原图片</h4>
+                        </div>
+
                     </colum>
-                    <colum class="col-12 col-lg-4 mb-4">
-                        <canvas id="ans3" width="512" height="512"></canvas>
+                    <colum class="col-12 col-lg-4">
+                        <div class="mb-3">
+                            <canvas id="ans3" width="512" height="512"></canvas>
+                        </div>
+                        <div>
+                            <h4 class="h4-responsive text-center">还原 - 原始</h4>
+                        </div>
+
                     </colum>
                 </row>
+
                 <row class="row wow fadeIn align-items-center">
                     <colum class="col-12 mb-4 text-center">
                         <button type="button" class="btn btn-primary" id="startB">生成对比图</button>
                     </colum>
 
+                </row>
+                <row class="row wow fadeIn align-items-center">
+                    <colum class="col-12 col-lg-6 mb-4">
+
+                        <div id="linemapx"></div>
+                        <h4 class="h4-responsive text-center">过中心水平方向差值</h4>
+                    </colum>
+                    <colum class="col-12 col-lg-6 mb-4">
+                        <div id="linemapy"></div>
+                        <h4 class="h4-responsive text-center">过中心垂直方向差值</h4>
+                    </colum>
                 </row>
             </section>
 
@@ -310,7 +349,15 @@
             <a class="text-white" data-toggle="tooltip" data-placement="top" title="Wazons@sjtu.edu.cn"> Wazon </a>
         </div>
     </footer>
-
+    <!-- electron compatible
+    <script>
+        window.nodeRequire = require;
+        delete window.require;
+        delete window.exports;
+        delete window.module;
+    </script>
+    -->
+    <script src="js/echarts.common.min.js"></script>
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>

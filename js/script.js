@@ -1,6 +1,10 @@
 //获取默认图片
-var img = new Image();
-img.src = './img/sl.png';
+var img1 = document.getElementById('img1');
+var img2 = document.getElementById('img2');
+var img3 = document.getElementById('img3');
+var img4 = document.getElementById('img4');
+var img5 = new Image();
+
 
 //全局变量
 var L = 512; //图片边长
@@ -39,8 +43,8 @@ var ctx2 = canvas2.getContext('2d');
 var ctx3 = canvas3.getContext('2d');
 
 //初始化默认图片
-img.style.display = 'none';
-ctx.drawImage(img, 0, 0);
+
+ctx.drawImage(img1, 0, 0);
 
 //定义画布的内部数据格式
 var imageData = ctx.getImageData(0, 0, L, L);
@@ -118,11 +122,12 @@ function rcheck2() {
 r2.addEventListener('click', rcheck2);
 
 //图片选择界面控制代码
+var checkedn = 1;
+
 function cimg1() {
+    checkedn = 1;
     //修改原始图片
-    img = new Image();
-    img.src = './img/sl.png';
-    ctx.drawImage(img, 0, 0);
+    ctx.drawImage(img1, 0, 0);
     //在选择图片页面显示选中效果
     $('#ximg1').addClass("active");
     $('#ximg2').removeClass("active");
@@ -131,9 +136,8 @@ function cimg1() {
 }
 
 function cimg2() {
-    img = new Image();
-    img.src = './img/lung.png';
-    ctx.drawImage(img, 0, 0);
+    checkedn = 2;
+    ctx.drawImage(img2, 0, 0);
     $('#ximg1').removeClass("active");
     $('#ximg2').addClass("active");
     $('#ximg3').removeClass("active");
@@ -141,9 +145,8 @@ function cimg2() {
 }
 
 function cimg3() {
-    img = new Image();
-    img.src = './img/bone.png';
-    ctx.drawImage(img, 0, 0);
+    checkedn = 3;
+    ctx.drawImage(img3, 0, 0);
     $('#ximg1').removeClass("active");
     $('#ximg2').removeClass("active");
     $('#ximg3').addClass("active");
@@ -151,14 +154,38 @@ function cimg3() {
 }
 
 function cimg4() {
-    img = new Image();
-    img.src = './img/color.png';
-    ctx.drawImage(img, 0, 0);
+    checkedn = 4;
+    ctx.drawImage(img4, 0, 0);
     $('#ximg1').removeClass("active");
     $('#ximg2').removeClass("active");
     $('#ximg3').removeClass("active");
     $('#ximg4').addClass("active");
 }
+
+//自定义图像
+$(function() {
+    $("#file").change(function(e) {
+        var file = e.target.files[0] || e.dataTransfer.files[0];
+        $('#filelabel').text(document.getElementById("file").files[0].name);
+        //在选择图片页面去除选中效果
+        $('#ximg1').removeClass("active");
+        $('#ximg2').removeClass("active");
+        $('#ximg3').removeClass("active");
+        $('#ximg4').removeClass("active");
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                img5.src = this.result;
+            }
+            img5.onload = function() {
+                ctx.drawImage(img5, 0, 0, 512, 512);
+                files[0].name = "";
+            }
+
+            reader.readAsDataURL(file);
+        }
+    });
+})
 
 //图像调整。用于将值域不固定的图像缩放到指定范围内
 var adjustimg = function(imgdata, maxl, minl) {
@@ -189,7 +216,7 @@ var Page1 = function() {
             //从文本框中更新信息
             i = Math.floor(Number(degreebox.value) / step);
             step = Number(stepbox.value);
-            tRange = Number(rangebox.value);
+            tRange = Number(rangebox.value) - step;
             startR.innerHTML = "暂停";
             if (!stepbox.disabled) //判断是从头重新启动还是暂停
             {
@@ -744,7 +771,13 @@ Page3();
 
 
 var Page4 = function() {
+    //图表数据
+    var datax = [];
+    var datay = [];
+
     var refreshP4 = function() {
+        datax = [];
+        datay = [];
         imageData1 = ctx1.createImageData(L, L);
         imageData2 = ctx2.createImageData(L, L);
         imageData3 = ctx2.createImageData(L, L);
@@ -795,14 +828,116 @@ var Page4 = function() {
         //灰色代表两图像一致，亮于灰色代表反投影图像比原图亮
         for (var l = 0; l < L; l++) {
             for (var j = 0; j < L; j++) {
-                data3[L * l * 4 + j * 4 + 0] = (data2[L * l * 4 + j * 4 + 0] - data1[L * l * 4 + j * 4 + 0]) / 2 + 128;
-                data3[L * l * 4 + j * 4 + 1] = (data2[L * l * 4 + j * 4 + 1] - data1[L * l * 4 + j * 4 + 1]) / 2 + 128;
-                data3[L * l * 4 + j * 4 + 2] = (data2[L * l * 4 + j * 4 + 2] - data1[L * l * 4 + j * 4 + 2]) / 2 + 128;
+                data3[L * l * 4 + j * 4 + 0] = (data2[L * l * 4 + j * 4 + 0] - data1[L * l * 4 + j * 4 + 0]) + 128;
+                data3[L * l * 4 + j * 4 + 1] = (data2[L * l * 4 + j * 4 + 1] - data1[L * l * 4 + j * 4 + 1]) + 128;
+                data3[L * l * 4 + j * 4 + 2] = (data2[L * l * 4 + j * 4 + 2] - data1[L * l * 4 + j * 4 + 2]) + 128;
                 data3[L * l * 4 + j * 4 + 3] = 255;
             }
         }
+
         ctx3.putImageData(imageData3, 0, 0);
+
+        //X
+        var l = L / 2 - 1
+        for (var j = 0; j < L; j++) {
+            var a1 = data2[L * l * 4 + j * 4 + 0] - data1[L * l * 4 + j * 4 + 0];
+            var a2 = data2[L * l * 4 + j * 4 + 1] - data1[L * l * 4 + j * 4 + 1];
+            var a3 = data2[L * l * 4 + j * 4 + 2] - data1[L * l * 4 + j * 4 + 2];
+            datax.push([j + 1, (a1 + a2 + a3) / 3]);
+        }
+
+        //Y
+        var j = L / 2 - 1
+        for (var l = 0; l < L; l++) {
+            var a1 = data2[L * l * 4 + j * 4 + 0] - data1[L * l * 4 + j * 4 + 0];
+            var a2 = data2[L * l * 4 + j * 4 + 1] - data1[L * l * 4 + j * 4 + 1];
+            var a3 = data2[L * l * 4 + j * 4 + 2] - data1[L * l * 4 + j * 4 + 2];
+            datay.push([l + 1, (a1 + a2 + a3) / 3]);
+        }
+
+
+        optionx = {
+            series: [{
+                data: datax
+            }]
+        };
+        optiony = {
+            series: [{
+                data: datay
+            }]
+        };
+        myChartx.setOption(optionx);
+        myCharty.setOption(optiony);
+
     }
     startB.addEventListener('click', compare);
+
+
+    for (var j = 0; j < L; j++) {
+        datax.push([j + 1, 0]);
+        datay.push([j + 1, 0]);
+    }
+    var domx = document.getElementById("linemapx");
+    var domy = document.getElementById("linemapy");
+    var myChartx = echarts.init(domx);
+    var myCharty = echarts.init(domy);
+    optionx = null;
+    optiony = null;
+    optionx = {
+        tooltip: {
+            trigger: 'axis',
+            formatter: function(params) {
+                params = params[0];
+                return params.value[0] + ' : ' + params.value[1];
+            }
+        },
+        xAxis: {
+            type: 'value',
+            min: 1,
+            max: 512,
+            splitLine: {
+                show: false
+            }
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: datax,
+            showSymbol: false,
+            type: 'line'
+        }]
+    };
+    optiony = {
+        tooltip: {
+            trigger: 'axis',
+            formatter: function(params) {
+                params = params[0];
+                return params.value[0] + ' : ' + params.value[1];
+            }
+        },
+        xAxis: {
+            type: 'value',
+            min: 1,
+            max: 512,
+            splitLine: {
+                show: false
+            }
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: datay,
+            showSymbol: false,
+            type: 'line'
+        }]
+    };
+    if (optionx && typeof optionx === "object")
+        myChartx.setOption(optionx, true);
+
+    if (optiony && typeof optiony === "object")
+        myCharty.setOption(optiony, true);
+
 }
 Page4();
